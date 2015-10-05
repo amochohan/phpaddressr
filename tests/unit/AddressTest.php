@@ -202,6 +202,16 @@ class AddressTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->address->toArray()['latitude']);
     }
 
+    public function test_it_checks_if_a_long_lat_has_been_set()
+    {
+        $this->assertFalse($this->address->hasLatLng());
+
+        $this->address->setLongitude(123);
+        $this->assertFalse($this->address->hasLatLng());
+
+        $this->address->setLongitude(123)->setLatitude(321);
+        $this->assertTrue($this->address->hasLatLng());
+    }
 }
 
 
