@@ -216,14 +216,4 @@ class Address
         }
         return $result;
     }
-
-    /*public function geoCode()
-    {
-        $this->verify();
-        $response = [];
-        if ($this->gotResultsFromApi($response)) {
-            $this->longitude = $response['results'][0]['geometry']['location']['lng'];
-            $this->latitude = $response['results'][0]['geometry']['location']['lat'];
-        }
-    }*/
 }
