@@ -1,0 +1,20 @@
+language: php
+php:
+  - 5.4
+  - 5.5
+  - 5.6
+  - hhvm
+  - nightly
+
+before_script:
+  - composer self-update
+
+install:
+  - composer install
+
+script:
+  - vendor/bin/phpunit
+
+env:
+  global:
+    secure: i7nXW8/UTzjUnmW8v7Q0cjMCL4KeL6Szmk1qKZpp23A/eF0BASHBFKyTbuVaXINObMU5jLbKOCqGxE2CnXqC+uOpkaRZTOuVSMEYomVzpU1A4B+9KYAEUEvF5jOwlyXfOdyX0wRvTKUHTM77y4fCJ0XHFKS09nesCX/2S8uIiFI/QLECg5y7PCghzyaAO/8tMId6E8UBHsHBpG+/qsJ6yGhjuF/Nr57Ze9KAz69oeFxMCeuRDHy8Mkj0fPWxpYCSqT8hU0izpLJ3i/q1m7IuPcF86IBFhWtFoLWiaDeD98MUJ0JPvKz7jKnXOr0TxUFcCYnY0jWUNfF92F+DAd/56F7h1FwPfp5oqwfMY+84NZxU5QCqLqqhXih3Z/rMEklUg9ai0t7RfJaqw6Z9sbp+8SVuWRb1Fb0lx5z3YwYXSM5xhPmjkdiILYGG4/a59WMuplAKrDzke0gk5hy24Z0Cs9fYBx5CVfcq6hUkcjnOKT3k/ACXCHQKUWwdORyMg5kv1E4P30YPsAtkDYe62NwbUam5MLqNnPLPr19FDyNL50A84m9hw10d07UgESUqXb39PoRZAB+km9pvmVmZq1xVNJxgTT4fYqpApaJo/xH0Silq0n+1cfyT/v+8eYA42m7E4zDXcfhTBMTGUJR/w9TfFApEm5649vcUGV72KiWLr0k=
