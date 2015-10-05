@@ -214,6 +214,8 @@ class Address
         foreach ($this->address as $attribute => $values) {
             $result[$attribute] = $values->value;
         }
+        $result['longitude'] = $this->longitude;
+        $result['latitude'] = $this->latitude;
         return $result;
     }
 }

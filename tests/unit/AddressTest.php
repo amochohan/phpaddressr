@@ -185,6 +185,23 @@ class AddressTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('United Kingdom', $this->address->toArray()['country']);
     }
 
+    public function test_it_appends_longitude_latitude_attributes_to_the_array_representation()
+    {
+        $this->address->setCompany('Energy Aspects Ltd.')
+            ->setBuilding('Dock Offices')
+            ->setCity('London')
+            ->setPostcode('SE16 2XU')
+            ->setCountry('United Kingdom');
+
+        $this->assertContains('Energy Aspects Ltd.', $this->address->toArray()['company']);
+        $this->assertContains('Dock Offices', $this->address->toArray()['building']);
+        $this->assertContains('London', $this->address->toArray()['city']);
+        $this->assertContains('SE16 2XU', $this->address->toArray()['postcode']);
+        $this->assertContains('United Kingdom', $this->address->toArray()['country']);
+        $this->assertNull($this->address->toArray()['longitude']);
+        $this->assertNull($this->address->toArray()['latitude']);
+    }
+
 }
 
 
