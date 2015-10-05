@@ -1,0 +1,27 @@
+{
+    "name": "drawmyattention/phpaddressr",
+    "description": "An address cleaner, normaliser written in PHP. Includes implementation to use the SmartyStreets.com api for US address cleaning, and Google Geocoding.",
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Amo Chohan",
+            "email": "amo.chohan@gmail.com"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+      "psr-4": {
+        "DrawMyAttention\\PHPAddressr\\" : "src"
+      },
+      "files": ["config.php"]
+    },
+    "autoload-dev": {
+      "psr-0": {
+        "PHPAddressrTests\\": "tests/"
+      }
+    }
+}
