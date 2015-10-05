@@ -17,10 +17,12 @@ class GoogleGeocodeTest extends \PHPUnit_Framework_TestCase
     {
         $fullAddress = $this->sut->getFullAddressByPostcode('SE16 2XU');
 
-        $this->assertEquals('Surrey Quays Road', $fullAddress['street']);
-        $this->assertEquals('London', $fullAddress['city']);
-        $this->assertEquals('Greater London', $fullAddress['state']);
-        $this->assertEquals('United Kingdom', $fullAddress['country']);
+        $this->assertEquals('Surrey Quays Road', $fullAddress->street());
+        $this->assertEquals('London', $fullAddress->city());
+        $this->assertEquals('Greater London', $fullAddress->state());
+        $this->assertEquals('United Kingdom', $fullAddress->country());
+        $this->assertEquals(-0.051054, $fullAddress->longitude());
+        $this->assertEquals(51.4967696, $fullAddress->latitude());
     }
 
     public function test_it_returns_null_if_no_results_are_found_for_a_postcode()
@@ -33,9 +35,9 @@ class GoogleGeocodeTest extends \PHPUnit_Framework_TestCase
     {
         $fullAddress = $this->sut->getFullAddressByPostcode('90210');
 
-        $this->assertEquals('Heather Road', $fullAddress['street']);
-        $this->assertEquals('Los Angeles County', $fullAddress['city']);
-        $this->assertEquals('California', $fullAddress['state']);
-        $this->assertEquals('United States', $fullAddress['country']);
+        $this->assertEquals('Heather Road', $fullAddress->street());
+        $this->assertEquals('Los Angeles County', $fullAddress->city());
+        $this->assertEquals('California', $fullAddress->state());
+        $this->assertEquals('United States', $fullAddress->country());
     }
 }

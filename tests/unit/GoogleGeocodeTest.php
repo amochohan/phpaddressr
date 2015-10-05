@@ -1,7 +1,6 @@
 <?php
 namespace PHPAddressrTests\Unit;
 
-//use DrawMyAttention\PHPAddressr\Address;
 use DrawMyAttention\PHPAddressr\GoogleGeocode;
 
 class GoogleGeocodeTest extends \PHPUnit_Framework_TestCase
@@ -42,8 +41,8 @@ class GoogleGeocodeTest extends \PHPUnit_Framework_TestCase
             'country'   => 'Mars'
         ]);
 
-        $this->assertEquals(null, $results['longitude']);
-        $this->assertEquals(null, $results['latitude']);
+        $this->assertNull($results['longitude']);
+        $this->assertNull($results['latitude']);
     }
 
     public function test_it_builds_a_request_url_from_address_data()
@@ -93,10 +92,12 @@ class GoogleGeocodeTest extends \PHPUnit_Framework_TestCase
 
         $address = $geocode->getAddressByLatLng('55.378051', '-3.435973');
 
-        $this->assertEquals('Surrey Quays Road', $address['street']);
-        $this->assertEquals('London', $address['city']);
-        $this->assertEquals('Greater London', $address['state']);
-        $this->assertEquals('United Kingdom', $address['country']);
+        $this->assertInstanceOf('DrawMyAttention\PHPAddressr\Address', $address);
+
+        $this->assertEquals('Surrey Quays Road', $address->street());
+        $this->assertEquals('London', $address->city());
+        $this->assertEquals('Greater London', $address->state());
+        $this->assertEquals('United Kingdom', $address->country());
     }
 
     public function test_it_gets_an_address_by_postcode()
@@ -116,10 +117,10 @@ class GoogleGeocodeTest extends \PHPUnit_Framework_TestCase
         $geocode->setApiKey('123');
         $address = $geocode->getFullAddressByPostcode('SE16 2XU');
 
-        $this->assertEquals('Surrey Quays Road', $address['street']);
-        $this->assertEquals('London', $address['city']);
-        $this->assertEquals('Greater London', $address['state']);
-        $this->assertEquals('United Kingdom', $address['country']);
+        $this->assertEquals('Surrey Quays Road', $address->street());
+        $this->assertEquals('London', $address->city());
+        $this->assertEquals('Greater London', $address->state());
+        $this->assertEquals('United Kingdom', $address->country());
     }
 
     public function test_it_returns_null_when_an_address_cannot_be_found_by_postcode()
