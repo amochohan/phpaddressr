@@ -3,6 +3,8 @@
 PHPAddressr is a framework agnostic set of methods that allows easy postcode / zipcode lookups, and conversion of 
 addresses to longitude and latitude values via Google's mapping APIs.
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/drawmyattention/phpaddressr/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/drawmyattention/phpaddressr/?branch=master) [![Build Status](https://scrutinizer-ci.com/g/drawmyattention/phpaddressr/badges/build.png?b=master)](https://scrutinizer-ci.com/g/drawmyattention/phpaddressr/build-status/master) [![Code Coverage](https://scrutinizer-ci.com/g/drawmyattention/phpaddressr/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/drawmyattention/phpaddressr/?branch=master) [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://www.opensource.org/licenses/MIT)
+
 ## Installation
 
 Composer is the easiest way to install PHPAddressr.
