@@ -18,8 +18,8 @@ class Address
         'country' => null
     ];
 
-    public $longitude = null;
-    public $latitude = null;
+    private $longitude = null;
+    private $latitude = null;
 
     private $required = [
         'street', 'city', 'postcode', 'country'
@@ -217,5 +217,38 @@ class Address
         $result['longitude'] = $this->longitude;
         $result['latitude'] = $this->latitude;
         return $result;
+    }
+
+    public function setLongitude($longitude)
+    {
+        $this->longitude = $longitude;
+        return $this;
+    }
+
+    public function setLatitude($latitude)
+    {
+        $this->latitude = $latitude;
+        return $this;
+    }
+
+    /**
+     * @return null
+     */
+    public function longitude()
+    {
+        return $this->longitude;
+    }
+
+    /**
+     * @return null
+     */
+    public function latitude()
+    {
+        return $this->latitude;
+    }
+
+    public function hasLatLng()
+    {
+        return (!is_null($this->longitude) && !is_null($this->latitude));
     }
 }
