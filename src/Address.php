@@ -211,7 +211,7 @@ class Address
     public function toArray()
     {
         $result = [];
-        foreach($this->address as $attribute => $values) {
+        foreach ($this->address as $attribute => $values) {
             $result[$attribute] = $values->value;
         }
         return $result;
