@@ -22,24 +22,24 @@ class GoogleGeocode implements GeocodeContract
 
     public function sendRequest($url)
     {
-        return json_decode(file_get_contents($url),true);
+        return json_decode(file_get_contents($url), true);
     }
 
     private function buildRequest($address)
     {
-        if (! $this->isApiKeyAvailable()) {
+        if (!$this->isApiKeyAvailable()) {
             throw new MissingGeocodeApiKeyException();
         }
 
         $addressAsString = '';
-        foreach($address as $attributeName => $attribute) {
+        foreach ($address as $attributeName => $attribute) {
             if ($this->isAttributeSet($attribute)) {
                 $addressAsString .= urlencode($attribute) . ',';
             }
         }
         $addressAsString = rtrim($addressAsString, ',');
 
-        return 'https://maps.googleapis.com/maps/api/geocode/json?address='.$addressAsString.'&key=' . $this->apiKey;
+        return 'https://maps.googleapis.com/maps/api/geocode/json?address=' . $addressAsString . '&key=' . $this->apiKey;
     }
 
     /**
@@ -67,7 +67,7 @@ class GoogleGeocode implements GeocodeContract
      */
     private function isApiKeyAvailable()
     {
-        return ! $this->apiKey == '' || is_null($this->apiKey);
+        return !$this->apiKey == '' || is_null($this->apiKey);
     }
 
     public function getAddressByLatLng($latitude, $longitude)
