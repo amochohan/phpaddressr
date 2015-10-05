@@ -21,11 +21,16 @@ API key safe, and outside of source control.
 
 Once you have an API key, edit the ```config.php``` file to specify your key.
 
+Alternatively, you can set the Api key using the ```setApiKey()``` method in the GoogleGeocode class.
+
 ## Usage
 
 ### Finding the longitude / latitude of an address
 
     $geocode = new DrawMyAttention\PHPAddressr\GoogleGeocode();
+    
+    // Optional, if a key hasn't been provided in the config file.
+    $geocode->setApiKey('123abc');
     
     $latLng = $geocode->getLatLng([
         'building'  => 'Dock offices'
@@ -54,17 +59,80 @@ Once you have an API key, edit the ```config.php``` file to specify your key.
     
     $address = $geocode->getFullAddressByPostcode('SE16 2XU');
     
+    // An Address instance is returned.
+    
     /* 
-        array(4) {
-          'street' =>
-          string(17) "Surrey Quays Road"
-          'city' =>
-          string(6) "London"
-          'state' =>
-          string(14) "Greater London"
-          'country' =>
-          string(14) "United Kingdom"
-        }
+        class DrawMyAttention\PHPAddressr\Address#4 (4) {
+          private $address =>
+          array(7) {
+            'company' =>
+            class DrawMyAttention\PHPAddressr\Data#9 (3) {
+              public $required =>
+              bool(false)
+              public $value =>
+              string(0) ""
+              public $updated =>
+              string(0) ""
+            }
+            'building' =>
+            class DrawMyAttention\PHPAddressr\Data#10 (3) {
+              public $required =>
+              bool(false)
+              public $value =>
+              string(0) ""
+              public $updated =>
+              string(0) ""
+            }
+            'street' =>
+            class DrawMyAttention\PHPAddressr\Data#5 (3) {
+              public $required =>
+              bool(true)
+              public $value =>
+              string(17) "Surrey Quays Road"
+              public $updated =>
+              string(0) ""
+            }
+            'city' =>
+            class DrawMyAttention\PHPAddressr\Data#6 (3) {
+              public $required =>
+              bool(true)
+              public $value =>
+              string(6) "London"
+              public $updated =>
+              string(0) ""
+            }
+            'state' =>
+            class DrawMyAttention\PHPAddressr\Data#7 (3) {
+              public $required =>
+              bool(false)
+              public $value =>
+              string(14) "Greater London"
+              public $updated =>
+              string(0) ""
+            }
+            'postcode' =>
+            class DrawMyAttention\PHPAddressr\Data#11 (3) {
+              public $required =>
+              bool(true)
+              public $value =>
+              string(0) ""
+              public $updated =>
+              string(0) ""
+            }
+            'country' =>
+            class DrawMyAttention\PHPAddressr\Data#8 (3) {
+              public $required =>
+              bool(true)
+              public $value =>
+              string(14) "United Kingdom"
+              public $updated =>
+              string(0) ""
+            }
+          }
+          private $longitude =>
+          double(-0.051054)
+          private $latitude =>
+          double(51.4967696)
     */
     
 ## Contributing
