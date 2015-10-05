@@ -78,14 +78,19 @@ class GoogleGeocode implements GeocodeContract
 
         if ($this->gotResults($response)) {
 
-            $address = $response['results'][0]['address_components'];
+            $response = $response['results'][0]['address_components'];
 
-            return [
-                'street'    => str_replace('Dr', 'Drive', $address[1]['long_name']),
-                'city'      => $address[3]['long_name'],
-                'state'     => $address[4]['long_name'],
-                'country'   => $address[5]['long_name']
-            ];
+            $address = new Address([
+                'street'    => str_replace('Dr', 'Drive', $response[1]['long_name']),
+                'city'      => $response[3]['long_name'],
+                'state'     => $response[4]['long_name'],
+                'country'   => $response[5]['long_name']
+            ]);
+
+            $address->setLatitude($latitude)
+                ->setLongitude($longitude);
+
+            return $address;
         }
         return null;
     }
