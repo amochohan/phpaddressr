@@ -21,8 +21,9 @@ class GoogleGeocodeTest extends \PHPUnit_Framework_TestCase
             'country'   => 'United Kingdom'
         ]);
 
-        $this->assertEquals(321, $results['longitude']);
-        $this->assertEquals(123, $results['latitude']);
+        $this->assertCount(1, $results);
+        $this->assertEquals(321, $results[0]['longitude']);
+        $this->assertEquals(123, $results[0]['latitude']);
     }
 
     public function test_it_handles_no_results_when_a_long_lat_cannot_be_found()
@@ -41,8 +42,7 @@ class GoogleGeocodeTest extends \PHPUnit_Framework_TestCase
             'country'   => 'Mars'
         ]);
 
-        $this->assertNull($results['longitude']);
-        $this->assertNull($results['latitude']);
+        $this->assertCount(0, $results);
     }
 
     public function test_it_builds_a_request_url_from_address_data()
@@ -90,14 +90,15 @@ class GoogleGeocodeTest extends \PHPUnit_Framework_TestCase
             ->method('sendRequest')
             ->willReturn($this->validAddressResponse());
 
-        $address = $geocode->getAddressByLatLng('55.378051', '-3.435973');
+        $results = $geocode->getAddressByLatLng('55.378051', '-3.435973');
 
-        $this->assertInstanceOf('DrawMyAttention\PHPAddressr\Address', $address);
+        $this->assertCount(1, $results);
+        $this->assertInstanceOf('DrawMyAttention\PHPAddressr\Address', $results[0]);
 
-        $this->assertEquals('Surrey Quays Road', $address->street());
-        $this->assertEquals('London', $address->city());
-        $this->assertEquals('Greater London', $address->state());
-        $this->assertEquals('United Kingdom', $address->country());
+        $this->assertEquals('Surrey Quays Road', $results[0]->street());
+        $this->assertEquals('London', $results[0]->city());
+        $this->assertEquals('Greater London', $results[0]->state());
+        $this->assertEquals('United Kingdom', $results[0]->country());
     }
 
     public function test_it_gets_an_address_by_postcode()
@@ -115,15 +116,17 @@ class GoogleGeocodeTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->validAddressResponse());
 
         $geocode->setApiKey('123');
-        $address = $geocode->getFullAddressByPostcode('SE16 2XU');
+        $results = $geocode->getFullAddressByPostcode('SE16 2XU');
 
-        $this->assertEquals('Surrey Quays Road', $address->street());
-        $this->assertEquals('London', $address->city());
-        $this->assertEquals('Greater London', $address->state());
-        $this->assertEquals('United Kingdom', $address->country());
+        $this->assertCount(1, $results);
+
+        $this->assertEquals('Surrey Quays Road', $results[0]->street());
+        $this->assertEquals('London', $results[0]->city());
+        $this->assertEquals('Greater London', $results[0]->state());
+        $this->assertEquals('United Kingdom', $results[0]->country());
     }
 
-    public function test_it_returns_null_when_an_address_cannot_be_found_by_postcode()
+    public function test_it_returns_an_empty_array_when_an_address_cannot_be_found_by_postcode()
     {
         $geocode = $this->getMock('DrawMyAttention\PHPAddressr\GoogleGeocode', ['sendRequest']);
 
@@ -136,10 +139,11 @@ class GoogleGeocodeTest extends \PHPUnit_Framework_TestCase
 
         $address = $geocode->getFullAddressByPostcode('1NV4L1DP05TC0DE');
 
-        $this->assertNull($address);
+        $this->assertInternalType('array', $address);
+        $this->assertCount(0, $address);
     }
 
-    public function test_it_returns_null_when_an_address_cannot_be_found_by_lat_lng()
+    public function test_it_returns_an_empty_array_when_an_address_cannot_be_found_by_lat_lng()
     {
         $geocode = $this->getMock('DrawMyAttention\PHPAddressr\GoogleGeocode', ['sendRequest']);
 
@@ -153,7 +157,8 @@ class GoogleGeocodeTest extends \PHPUnit_Framework_TestCase
 
         $address = $geocode->getAddressByLatLng($invalidLat, $invalidLng);
 
-        $this->assertNull($address);
+        $this->assertInternalType('array', $address);
+        $this->assertCount(0, $address);
     }
 
     /**
@@ -195,13 +200,13 @@ class GoogleGeocodeTest extends \PHPUnit_Framework_TestCase
             'status' => 'OK',
             'results' => [[
                 'address_components' => [
-                    ['long_name' => '21'],
-                    ['long_name' => 'Surrey Quays Road'],
-                    ['long_name' => 'London'],
-                    ['long_name' => 'London'],
-                    ['long_name' => 'Greater London'],
-                    ['long_name' => 'United Kingdom'],
-                    ['long_name' => 'SE16'],
+                    ['long_name' => '21', 'types' => ['street_number']],
+                    ['long_name' => 'Surrey Quays Road', 'types' => ['route']],
+                    ['long_name' => 'London', 'types' => ['postal_town', 'locality', 'political']],
+                    ['long_name' => 'London', 'types' => ['political']],
+                    ['long_name' => 'Greater London', 'types' => ['administrative_area_level_2', 'administrative_area_level_1', 'political']],
+                    ['long_name' => 'United Kingdom', 'types' => ['country', 'political']],
+                    ['long_name' => 'SE16', 'types' => ['postal_code']],
                 ]
             ]]
         ];

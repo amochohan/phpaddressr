@@ -10,14 +10,18 @@ class GoogleGeocode implements GeocodeContract
 
     public function getLatLng($address)
     {
+        $results = [];
         $url = $this->buildRequest($address);
         $response = $this->sendRequest($url);
         if ($this->gotResults($response)) {
-            return [
-                'longitude' => $response['results'][0]['geometry']['location']['lng'],
-                'latitude' => $response['results'][0]['geometry']['location']['lat']
-            ];
+            foreach ($response['results'] as $result) {
+                $results[] = [
+                    'longitude' => $result['geometry']['location']['lng'],
+                    'latitude' => $result['geometry']['location']['lat'],
+                ];
+            }
         }
+        return $results;
     }
 
     public function sendRequest($url)
@@ -30,7 +34,7 @@ class GoogleGeocode implements GeocodeContract
         if (!$this->isApiKeyAvailable()) {
             throw new MissingGeocodeApiKeyException();
         }
-
+/*
         $addressAsString = '';
         foreach ($address as $attributeName => $attribute) {
             if ($this->isAttributeSet($attribute)) {
@@ -38,8 +42,26 @@ class GoogleGeocode implements GeocodeContract
             }
         }
         $addressAsString = rtrim($addressAsString, ',');
+*/
+        $addressAsString = $this->buildUrlEncodedCommaSeparatedStringFromArray($address);
 
         return 'https://maps.googleapis.com/maps/api/geocode/json?address=' . $addressAsString . '&key=' . $this->apiKey;
+    }
+
+    public function buildUrlEncodedCommaSeparatedStringFromArray(array $data)
+    {
+        return $this->buildCommaSeparatedStringFromArray($data, true);
+    }
+
+    public function buildCommaSeparatedStringFromArray(array $data, $urlencode = false)
+    {
+        $commaSeparatedString = '';
+        foreach ($data as $attributeName => $attribute) {
+            if ($this->isAttributeSet($attribute)) {
+                $commaSeparatedString .= ($urlencode ? urlencode($attribute) : $attribute) . ',';
+            }
+        }
+        return ltrim(rtrim($commaSeparatedString, ','), ',');
     }
 
     /**
@@ -76,34 +98,113 @@ class GoogleGeocode implements GeocodeContract
 
         $response = $this->sendRequest($url);
 
+        $addresses = [];
+
         if ($this->gotResults($response)) {
 
-            $response = $response['results'][0]['address_components'];
+            $results = $response['results'];
 
-            $address = new Address([
-                'street'    => str_replace('Dr', 'Drive', $response[1]['long_name']),
-                'city'      => $response[3]['long_name'],
-                'state'     => $response[4]['long_name'],
-                'country'   => $response[5]['long_name']
-            ]);
+            foreach ($results as $result) {
 
-            $address->setLatitude($latitude)
-                ->setLongitude($longitude);
+                $addressArray = [
+                    'street' => str_replace('Dr', 'Drive', $this->getStreetFromComponents($result['address_components'])),
+                    'city' => $this->getCityFromComponents($result['address_components']),
+                    'state' => $this->getStateFromComponents($result['address_components']),
+                    'country' => $this->getCountryFromComponents($result['address_components'])
+                ];
 
-            return $address;
+                $address = new Address($addressArray);
+
+                $address->shortAddress = $this->buildCommaSeparatedStringFromArray($addressArray);
+
+                $address->setLatitude($latitude)
+                    ->setLongitude($longitude);
+
+                $addresses[] = $address;
+
+            }
         }
-        return null;
+
+        return $addresses;
     }
 
     public function getFullAddressByPostcode($postcode)
     {
-        $latLng = $this->getLatLng(['postcode' => $postcode]);
+        $latLngs = $this->getLatLng(['postcode' => $postcode]);
 
-        if ($latLng) {
-            return $this->getAddressByLatLng($latLng['latitude'], $latLng['longitude']);
+        $results = [];
+
+        if (sizeof($latLngs) > 0) {
+            foreach ($latLngs as $latLng) {
+                $results += $this->getAddressByLatLng($latLng['latitude'], $latLng['longitude']);
+            }
         }
 
+        return array_unique($results, SORT_REGULAR);
+    }
+
+    public function getFullAddressByPostcodeAndCountry($postcode, $country)
+    {
+        $latLngs = $this->getLatLng(['postcode' => $postcode, 'country' => $country]);
+
+        $results = [];
+
+        if (sizeof($latLngs) > 0) {
+            foreach ($latLngs as $latLng) {
+                $results += $this->getAddressByLatLng($latLng['latitude'], $latLng['longitude']);
+            }
+        }
+
+        return array_unique($results, SORT_REGULAR);
+    }
+
+    public function getStreetFromComponents($components)
+    {
+        foreach ($components as $component) {
+            foreach ($component['types'] as $type) {
+                if ($type == 'route') {
+                    return $component['long_name'];
+                }
+            }
+        }
         return null;
     }
+
+    public function getCityFromComponents($components)
+    {
+        foreach ($components as $component) {
+            foreach ($component['types'] as $type) {
+                if ($type == 'postal_town') {
+                    return $component['long_name'];
+                }
+            }
+        }
+        return null;
+    }
+
+    public function getStateFromComponents($components)
+    {
+        foreach ($components as $component) {
+            foreach ($component['types'] as $type) {
+                if ($type == 'administrative_area_level_1' || $type == 'administrative_area_level_2') {
+                    return $component['long_name'];
+                }
+            }
+        }
+        return null;
+    }
+
+    public function getCountryFromComponents($components)
+    {
+        foreach ($components as $component) {
+            foreach ($component['types'] as $type) {
+                if ($type == 'country') {
+                    return $component['long_name'];
+                }
+            }
+        }
+        return null;
+    }
+
 
 }
