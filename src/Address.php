@@ -21,6 +21,8 @@ class Address
     private $longitude = null;
     private $latitude = null;
 
+    public $shortAddress = '';
+
     private $required = [
         'street', 'city', 'postcode', 'country'
     ];
