@@ -34,15 +34,7 @@ class GoogleGeocode implements GeocodeContract
         if (!$this->isApiKeyAvailable()) {
             throw new MissingGeocodeApiKeyException();
         }
-/*
-        $addressAsString = '';
-        foreach ($address as $attributeName => $attribute) {
-            if ($this->isAttributeSet($attribute)) {
-                $addressAsString .= urlencode($attribute) . ',';
-            }
-        }
-        $addressAsString = rtrim($addressAsString, ',');
-*/
+
         $addressAsString = $this->buildUrlEncodedCommaSeparatedStringFromArray($address);
 
         return 'https://maps.googleapis.com/maps/api/geocode/json?address=' . $addressAsString . '&key=' . $this->apiKey;
